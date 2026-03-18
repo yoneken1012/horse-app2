@@ -23,6 +23,10 @@ https://horse-app2.vercel.app
 - 🏇 調教師（trainer）: 投稿・閲覧・いいねが可能
 - 👑 馬主（owner）: 閲覧・いいねが可能
 
+## テスト用アカウント
+- 調教師: shimizu@example.com / password
+- 馬主: yonemoto@example.com / password
+
 ## セットアップ手順
 1. リポジトリをクローン
 2. npm install で依存関係をインストール
