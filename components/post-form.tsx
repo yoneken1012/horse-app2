@@ -187,14 +187,14 @@ export function PostForm({ userId }: PostFormProps) {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-gray-700 border border-gray-300"
+                className="bg-blue-500 text-white hover:bg-blue-600 hover:text-white"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <ImagePlus className="mr-1 h-4 w-4" />
                 画像・動画
               </Button>
             </div>
-            <Button type="submit" size="sm" disabled={isSubmitting}>
+            <Button type="submit" size="sm" disabled={isSubmitting} className="bg-gray-900 text-white hover:bg-gray-800 hover:text-white">
               {isSubmitting ? "投稿中..." : "投稿する"}
             </Button>
           </div>
