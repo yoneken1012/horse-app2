@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
@@ -24,10 +26,11 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, currentUserId }: PostCardProps) {
-  const reactionCount = post.reactions.length;
-  const isLiked = post.reactions.some(
-    (reaction) => reaction.user_id === currentUserId
+  const [reactionCount, setReactionCount] = useState(post.reactions.length);
+  const [isLiked, setIsLiked] = useState(
+    post.reactions.some((reaction) => reaction.user_id === currentUserId)
   );
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const formattedDate = new Date(post.created_at).toLocaleDateString("ja-JP", {
     year: "numeric",
@@ -36,6 +39,45 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const handleToggleLike = async () => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    const supabase = createClient();
+    const previousIsLiked = isLiked;
+    const previousCount = reactionCount;
+
+    // 楽観的更新
+    setIsLiked(!isLiked);
+    setReactionCount(isLiked ? reactionCount - 1 : reactionCount + 1);
+
+    try {
+      if (previousIsLiked) {
+        const { error } = await supabase
+          .from("reactions")
+          .delete()
+          .eq("post_id", post.id)
+          .eq("user_id", currentUserId);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("reactions").insert({
+          post_id: post.id,
+          user_id: currentUserId,
+          type: "like",
+        });
+
+        if (error) throw error;
+      }
+    } catch {
+      // ロールバック
+      setIsLiked(previousIsLiked);
+      setReactionCount(previousCount);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <Card className="bg-white shadow-sm">
@@ -51,14 +93,14 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           <img
             src={post.media_url}
             alt="投稿画像"
-            className="w-full rounded-md object-cover"
+            className="max-h-96 w-full rounded-md object-cover"
           />
         )}
         {post.media_url && post.media_type === "video" && (
           <video
             src={post.media_url}
             controls
-            className="w-full rounded-md"
+            className="max-h-96 w-full rounded-md"
           />
         )}
       </CardContent>
@@ -67,7 +109,8 @@ export function PostCard({ post, currentUserId }: PostCardProps) {
           variant="ghost"
           size="sm"
           className={isLiked ? "text-red-500" : "text-muted-foreground"}
-          disabled
+          disabled={isProcessing}
+          onClick={handleToggleLike}
         >
           <Heart
             className="mr-1 h-4 w-4"

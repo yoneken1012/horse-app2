@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { PostCard } from "@/components/post-card";
+import { PostForm } from "@/components/post-form";
 
 export async function TimelineContent() {
   const supabase = await createClient();
@@ -50,12 +51,8 @@ export async function TimelineContent() {
       <Header userName={profile.name} />
 
       <main className="mx-auto max-w-2xl px-4 py-6">
-        {/* トレーナー向け投稿フォームプレースホルダー */}
-        {profile.role === "trainer" && (
-          <div className="mb-6 rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 text-center text-sm text-muted-foreground">
-            投稿フォームがここに入ります
-          </div>
-        )}
+        {/* トレーナー向け投稿フォーム */}
+        {profile.role === "trainer" && <PostForm userId={userId} />}
 
         {/* 投稿一覧 */}
         {!posts || posts.length === 0 ? (
