@@ -187,6 +187,7 @@ export function PostForm({ userId }: PostFormProps) {
                 type="button"
                 variant="ghost"
                 size="sm"
+                className="text-gray-700 border border-gray-300"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <ImagePlus className="mr-1 h-4 w-4" />
