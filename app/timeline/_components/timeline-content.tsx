@@ -3,8 +3,20 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
 import { PostCard } from "@/components/post-card";
 
-export async function TimelineContent({ userId }: { userId: string }) {
+export async function TimelineContent() {
   const supabase = await createClient();
+
+  // ログインチェック
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    redirect("/auth/login");
+  }
+
+  const userId = user.id;
 
   // プロフィール取得
   const { data: profile, error: profileError } = await supabase

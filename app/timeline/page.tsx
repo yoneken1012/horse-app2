@@ -1,21 +1,7 @@
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { TimelineContent } from "./_components/timeline-content";
 
-export default async function TimelinePage() {
-  const supabase = await createClient();
-
-  // ログインチェック
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    redirect("/auth/login");
-  }
-
+export default function TimelinePage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Suspense
@@ -25,7 +11,7 @@ export default async function TimelinePage() {
           </div>
         }
       >
-        <TimelineContent userId={user.id} />
+        <TimelineContent />
       </Suspense>
     </div>
   );
