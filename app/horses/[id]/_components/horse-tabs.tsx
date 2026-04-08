@@ -16,6 +16,8 @@ interface Post {
     name: string;
     avatar_url: string | null;
   };
+  reactionCount: number;
+  isLikedByCurrentUser: boolean;
 }
 
 interface HorseTabsProps {
@@ -62,7 +64,7 @@ export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: Ho
 
       {/* タブコンテンツ */}
       <div className="py-4">
-        {activeTab === "calendar" && <CalendarTab posts={posts} />}
+        {activeTab === "calendar" && <CalendarTab posts={posts} currentUserId={currentUserId} />}
         {activeTab === "chat" && (
           <ChatTab
             horseId={horseId}

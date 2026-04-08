@@ -54,7 +54,8 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
     .select(
       `
       *,
-      profiles:user_id ( name, avatar_url )
+      profiles:user_id ( name, avatar_url ),
+      reactions ( id, user_id )
     `
     )
     .eq("user_id", horse.trainer_id)
@@ -64,14 +65,21 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
     console.error("投稿の取得に失敗しました:", postsError.message);
   }
 
-  const safePosts = (posts ?? []).map((post) => ({
-    id: post.id as string,
-    content: post.content as string,
-    media_url: post.media_url as string | null,
-    media_type: post.media_type as string | null,
-    created_at: post.created_at as string,
-    profiles: post.profiles as { name: string; avatar_url: string | null },
-  }));
+  const safePosts = (posts ?? []).map((post) => {
+    const reactions = Array.isArray(post.reactions) ? post.reactions : [];
+    return {
+      id: post.id as string,
+      content: post.content as string,
+      media_url: post.media_url as string | null,
+      media_type: post.media_type as string | null,
+      created_at: post.created_at as string,
+      profiles: post.profiles as { name: string; avatar_url: string | null },
+      reactionCount: reactions.length,
+      isLikedByCurrentUser: reactions.some(
+        (r: { user_id: string }) => r.user_id === user.id
+      ),
+    };
+  });
 
   return (
     <>
@@ -105,15 +113,15 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
               <h2 className="text-xl font-bold text-gray-900">{horse.name}</h2>
               <div className="mt-2 flex flex-wrap gap-2">
                 {horse.gender && (
-                  <Badge variant="secondary">
+                  <Badge className="bg-gray-900 text-white">
                     {genderLabel[horse.gender] ?? horse.gender}
                   </Badge>
                 )}
                 {horse.birth_year && (
-                  <Badge variant="secondary">{horse.birth_year}年生</Badge>
+                  <Badge className="bg-gray-900 text-white">{horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）</Badge>
                 )}
                 {horse.class && (
-                  <Badge variant="outline">{horse.class}</Badge>
+                  <Badge className="bg-gray-900 text-white">{horse.class}</Badge>
                 )}
               </div>
             </div>
