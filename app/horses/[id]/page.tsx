@@ -1,10 +1,10 @@
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 
 interface HorseDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function HorseDetailPage({ params }: HorseDetailPageProps) {
+async function HorseDetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   return (
@@ -15,5 +15,19 @@ export default async function HorseDetailPage({ params }: HorseDetailPageProps) 
         <p className="mt-2 text-sm text-gray-400">（準備中）</p>
       </div>
     </div>
+  );
+}
+
+export default function HorseDetailPage({ params }: HorseDetailPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-50">
+          <p className="text-muted-foreground">読み込み中...</p>
+        </div>
+      }
+    >
+      <HorseDetailContent params={params} />
+    </Suspense>
   );
 }
