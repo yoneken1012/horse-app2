@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CalendarTab } from "./calendar-tab";
 import { ChatTab } from "./chat-tab";
+import { LinkTab } from "./link-tab";
 import { Calendar, MessageCircle, Link2 } from "lucide-react";
 
 interface Post {
@@ -70,11 +71,7 @@ export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: Ho
           />
         )}
         {activeTab === "links" && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Link2 className="mb-3 h-10 w-10 text-gray-300" />
-            <p className="text-sm font-medium text-gray-600">リンク機能</p>
-            <p className="mt-1 text-xs text-gray-400">（準備中）</p>
-          </div>
+          <LinkTab horseId={horseId} currentUserId={currentUserId} />
         )}
       </div>
     </div>
