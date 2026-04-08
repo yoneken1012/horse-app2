@@ -123,7 +123,12 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
         {/* タブUI */}
         <Card className="bg-white shadow-sm">
           <CardContent className="p-4">
-            <HorseTabs posts={safePosts} />
+            <HorseTabs
+              posts={safePosts}
+              horseId={horseId}
+              currentUserId={user.id}
+              currentUserName={profile.name}
+            />
           </CardContent>
         </Card>
       </main>
