@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CalendarTab } from "./calendar-tab";
+import { ChatTab } from "./chat-tab";
 import { Calendar, MessageCircle, Link2 } from "lucide-react";
 
 interface Post {
@@ -18,6 +19,9 @@ interface Post {
 
 interface HorseTabsProps {
   posts: Post[];
+  horseId: string;
+  currentUserId: string;
+  currentUserName: string;
 }
 
 const tabs = [
@@ -28,7 +32,7 @@ const tabs = [
 
 type TabId = (typeof tabs)[number]["id"];
 
-export function HorseTabs({ posts }: HorseTabsProps) {
+export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: HorseTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("calendar");
 
   return (
@@ -59,11 +63,11 @@ export function HorseTabs({ posts }: HorseTabsProps) {
       <div className="py-4">
         {activeTab === "calendar" && <CalendarTab posts={posts} />}
         {activeTab === "chat" && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <MessageCircle className="mb-3 h-10 w-10 text-gray-300" />
-            <p className="text-sm font-medium text-gray-600">チャット機能</p>
-            <p className="mt-1 text-xs text-gray-400">（準備中）</p>
-          </div>
+          <ChatTab
+            horseId={horseId}
+            currentUserId={currentUserId}
+            currentUserName={currentUserName}
+          />
         )}
         {activeTab === "links" && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
