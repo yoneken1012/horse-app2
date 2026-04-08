@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 interface HorseDetailPageProps {
   params: Promise<{ id: string }>;
 }
