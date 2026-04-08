@@ -103,7 +103,7 @@ export async function HorseList() {
           <div className="grid gap-4">
             {horses.map((horse) => (
               <Link key={horse.id} href={`/horses/${horse.id}`}>
-                <Card className="transition-colors hover:bg-gray-50">
+                <Card className="bg-white shadow-sm transition-all hover:bg-gray-50 hover:shadow-lg">
                   <CardHeader className="flex flex-row items-center gap-4 pb-2">
                     {horse.image_url ? (
                       <img
@@ -117,20 +117,20 @@ export async function HorseList() {
                       </div>
                     )}
                     <div>
-                      <CardTitle className="text-base">{horse.name}</CardTitle>
+                      <CardTitle className="text-base text-gray-900">{horse.name}</CardTitle>
                       <div className="mt-1 flex flex-wrap gap-2">
                         {horse.gender && (
-                          <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
                             {genderLabel[horse.gender] ?? horse.gender}
                           </span>
                         )}
                         {horse.birth_year && (
-                          <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                            {horse.birth_year}年生
+                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
+                            {horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）
                           </span>
                         )}
                         {horse.class && (
-                          <span className="rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
                             {horse.class}
                           </span>
                         )}
