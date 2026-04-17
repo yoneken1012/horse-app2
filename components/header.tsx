@@ -16,8 +16,8 @@ const roleBadge: Record<string, string> = {
 };
 
 const navLinks = [
-  { href: "/timeline", label: "タイムライン" },
   { href: "/horses", label: "馬一覧" },
+  { href: "/timeline", label: "タイムライン" },
 ];
 
 export function Header({ userName, userRole }: HeaderProps) {
