@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { HorseTabs } from "./horse-tabs";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
 const genderLabel: Record<string, string> = {
   male: "牡",
@@ -47,6 +47,13 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
   if (horseError || !horse) {
     redirect("/horses");
   }
+
+  // 馬のデータベースリンク取得
+  const { data: horseLinks } = await supabase
+    .from("horse_links")
+    .select("url, title")
+    .eq("horse_id", horseId)
+    .eq("category", "database");
 
   // 調教師の投稿を取得（この馬の担当調教師の投稿）
   const { data: posts, error: postsError } = await supabase
@@ -124,6 +131,22 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
                   <Badge className="bg-gray-900 text-white">{horse.class}</Badge>
                 )}
               </div>
+              {horseLinks && horseLinks.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-3">
+                  {horseLinks.map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      {link.title ?? "France Galop"}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
