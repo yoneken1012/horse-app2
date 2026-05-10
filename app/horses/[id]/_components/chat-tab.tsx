@@ -213,7 +213,8 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
 
   const formatDateHeader = (dateString: string) => {
     const d = new Date(dateString);
-    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   };
 
   const getDateKey = (dateString: string) => {
@@ -229,10 +230,10 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
   return (
     <div className="flex flex-col">
       {/* メッセージ一覧 */}
-      <div className="flex max-h-96 flex-col gap-1 overflow-y-auto px-2 py-2">
+      <div className="flex max-h-[calc(100vh-340px)] min-h-[300px] flex-col gap-1 overflow-y-auto scrollbar-thin px-2 py-2">
         {messages.length === 0 ? (
-          <p className="py-12 text-center text-sm text-gray-400">
-            まだメッセージがありません
+          <p className="py-12 text-center text-sm text-muted-foreground">
+            No messages yet
           </p>
         ) : (
           messages.map((msg, index) => {
@@ -246,7 +247,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
                 {/* 日付区切り */}
                 {showDateHeader && (
                   <div className="my-3 flex justify-center">
-                    <span className="rounded-full bg-gray-100 px-3 py-0.5 text-xs text-gray-500">
+                    <span className="text-xs tracking-wider text-muted-foreground">
                       {formatDateHeader(msg.created_at)}
                     </span>
                   </div>
@@ -254,25 +255,25 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
 
                 {/* メッセージ */}
                 <div
-                  className={`flex ${isOwn ? "justify-end" : "justify-start"} mb-2`}
+                  className={`flex ${isOwn ? "justify-end" : "justify-start"} mb-1.5`}
                 >
                   <div className={`max-w-[75%] ${isOwn ? "order-2" : "order-1"}`}>
                     {!isOwn && (
-                      <p className="mb-0.5 text-xs font-medium text-gray-500">
+                      <p className="mb-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
                         {msg.profiles.name}
                       </p>
                     )}
                     <div className="flex items-end gap-1.5">
                       {isOwn && (
-                        <span className="shrink-0 text-[10px] text-gray-400">
+                        <span className="shrink-0 text-[10px] text-muted-foreground/70">
                           {formatTime(msg.created_at)}
                         </span>
                       )}
                       <div
-                        className={`overflow-hidden rounded-2xl text-sm ${
+                        className={`overflow-hidden rounded-md text-sm ${
                           isOwn
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-100 text-gray-900"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-foreground border border-border"
                         }`}
                       >
                         {/* メディア表示 */}
@@ -298,7 +299,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
                         )}
                       </div>
                       {!isOwn && (
-                        <span className="shrink-0 text-[10px] text-gray-400">
+                        <span className="shrink-0 text-[10px] text-muted-foreground/70">
                           {formatTime(msg.created_at)}
                         </span>
                       )}
@@ -314,7 +315,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
 
       {/* エラー表示 */}
       {error && (
-        <p className="px-2 pb-1 text-xs text-red-500">{error}</p>
+        <p className="px-2 pb-1 text-xs text-destructive">{error}</p>
       )}
 
       {/* プレビュー */}
@@ -346,7 +347,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
       {/* 入力エリア */}
       <form
         onSubmit={handleSend}
-        className="flex items-center gap-2 border-t pt-3"
+        className="flex items-center gap-2 border-t border-border/60 pt-2"
       >
         <input
           ref={fileInputRef}
@@ -359,7 +360,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
           type="button"
           variant="ghost"
           size="sm"
-          className="shrink-0 px-2 text-gray-500 hover:text-gray-700"
+          className="shrink-0 px-2 text-muted-foreground hover:text-foreground"
           onClick={() => fileInputRef.current?.click()}
         >
           <Paperclip className="h-5 w-5" />
@@ -367,14 +368,14 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="メッセージを入力..."
-          className="flex-1 text-gray-900"
+          placeholder="Type a message..."
+          className="flex-1 text-foreground"
         />
         <Button
           type="submit"
           size="sm"
           disabled={isSending || (!newMessage.trim() && !file)}
-          className="bg-blue-500 px-3 text-white hover:bg-blue-600"
+          className="bg-primary px-3 text-primary-foreground hover:bg-primary/90"
         >
           <Send className="h-4 w-4" />
         </Button>
