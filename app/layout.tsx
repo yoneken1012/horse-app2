@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
   description: "Uma Vie - Horse Management App",
 };
 
+const notoSansJp = Noto_Sans_JP({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>
+      <body className={`${notoSansJp.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>
