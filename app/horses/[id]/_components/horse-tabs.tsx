@@ -28,15 +28,15 @@ interface HorseTabsProps {
 }
 
 const tabs = [
-  { id: "calendar", label: "カレンダー", icon: Calendar },
   { id: "chat", label: "チャット", icon: MessageCircle },
+  { id: "calendar", label: "カレンダー", icon: Calendar },
   { id: "links", label: "リンク", icon: Link2 },
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
 
 export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: HorseTabsProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("calendar");
+  const [activeTab, setActiveTab] = useState<TabId>("chat");
 
   return (
     <div>
