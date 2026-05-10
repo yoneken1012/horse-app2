@@ -83,7 +83,7 @@ export async function HorseList() {
     <>
       <Header userName={profile.name} userRole={profile.role} />
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
+      <main className="px-3 py-3">
         <h2 className="mb-4 text-lg font-bold text-gray-900">
           {profile.role === "trainer" ? "担当馬一覧" : "所有馬一覧"}
         </h2>

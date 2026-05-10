@@ -86,7 +86,7 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
     <>
       <Header userName={profile.name} userRole={profile.role} />
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
+      <main className="px-3 py-3">
         {/* 戻るリンク */}
         <Link
           href="/horses"
