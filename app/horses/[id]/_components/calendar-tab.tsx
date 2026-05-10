@@ -1,27 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface Post {
+interface ChatRecord {
   id: string;
-  content: string;
-  media_url: string | null;
-  media_type: string | null;
+  message: string;
+  image_url: string | null;
   created_at: string;
+  user_id: string;
   profiles: {
     name: string;
     avatar_url: string | null;
   };
-  reactionCount: number;
-  isLikedByCurrentUser: boolean;
 }
 
 interface CalendarTabProps {
-  posts: Post[];
+  chats: ChatRecord[];
   currentUserId: string;
 }
 
@@ -46,34 +43,23 @@ function formatDate(dateString: string): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export function CalendarTab({ posts, currentUserId }: CalendarTabProps) {
+function isVideoUrl(url: string): boolean {
+  return /\.(mp4|mov|webm|quicktime)/i.test(url);
+}
+
+export function CalendarTab({ chats }: CalendarTabProps) {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  // いいね状態を管理（postId → { count, isLiked }）
-  const [reactionState, setReactionState] = useState<
-    Record<string, { count: number; isLiked: boolean }>
-  >(() => {
-    const initial: Record<string, { count: number; isLiked: boolean }> = {};
-    for (const post of posts) {
-      initial[post.id] = {
-        count: post.reactionCount,
-        isLiked: post.isLikedByCurrentUser,
-      };
-    }
-    return initial;
-  });
-  const [processingLike, setProcessingLike] = useState<string | null>(null);
-
-  // 投稿を日付でグループ化
-  const postsByDate = posts.reduce<Record<string, Post[]>>((acc, post) => {
-    const dateKey = formatDate(post.created_at);
+  // チャットを日付でグループ化
+  const chatsByDate = chats.reduce<Record<string, ChatRecord[]>>((acc, chat) => {
+    const dateKey = formatDate(chat.created_at);
     if (!acc[dateKey]) {
       acc[dateKey] = [];
     }
-    acc[dateKey].push(post);
+    acc[dateKey].push(chat);
     return acc;
   }, {});
 
@@ -104,58 +90,7 @@ export function CalendarTab({ posts, currentUserId }: CalendarTabProps) {
     setSelectedDate(selectedDate === dateKey ? null : dateKey);
   };
 
-  const handleToggleLike = async (postId: string) => {
-    if (processingLike) return;
-    setProcessingLike(postId);
-
-    const current = reactionState[postId];
-    if (!current) {
-      setProcessingLike(null);
-      return;
-    }
-
-    const previousIsLiked = current.isLiked;
-    const previousCount = current.count;
-
-    // 楽観的更新
-    setReactionState((prev) => ({
-      ...prev,
-      [postId]: {
-        count: previousIsLiked ? previousCount - 1 : previousCount + 1,
-        isLiked: !previousIsLiked,
-      },
-    }));
-
-    const supabase = createClient();
-
-    try {
-      if (previousIsLiked) {
-        const { error } = await supabase
-          .from("reactions")
-          .delete()
-          .eq("post_id", postId)
-          .eq("user_id", currentUserId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("reactions").insert({
-          post_id: postId,
-          user_id: currentUserId,
-          type: "like",
-        });
-        if (error) throw error;
-      }
-    } catch {
-      // ロールバック
-      setReactionState((prev) => ({
-        ...prev,
-        [postId]: { count: previousCount, isLiked: previousIsLiked },
-      }));
-    } finally {
-      setProcessingLike(null);
-    }
-  };
-
-  const selectedPosts = selectedDate ? postsByDate[selectedDate] ?? [] : [];
+  const selectedChats = selectedDate ? chatsByDate[selectedDate] ?? [] : [];
 
   const todayKey = formatDate(today.toISOString());
 
@@ -199,7 +134,7 @@ export function CalendarTab({ posts, currentUserId }: CalendarTabProps) {
           }
 
           const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-          const hasPosts = Boolean(postsByDate[dateKey]);
+          const hasChats = Boolean(chatsByDate[dateKey]);
           const isSelected = selectedDate === dateKey;
           const isToday = dateKey === todayKey;
 
@@ -216,7 +151,7 @@ export function CalendarTab({ posts, currentUserId }: CalendarTabProps) {
               }`}
             >
               {day}
-              {hasPosts && (
+              {hasChats && (
                 <span
                   className={`absolute bottom-1 h-1.5 w-1.5 rounded-full ${
                     isSelected ? "bg-white" : "bg-blue-500"
@@ -228,72 +163,49 @@ export function CalendarTab({ posts, currentUserId }: CalendarTabProps) {
         })}
       </div>
 
-      {/* 選択日の投稿一覧 */}
+      {/* 選択日のメッセージ一覧 */}
       {selectedDate && (
         <div className="space-y-3">
           <h3 className="text-sm font-bold text-gray-700">
-            {selectedDate.replace(/-/g, "/")} の投稿
+            {selectedDate.replace(/-/g, "/")} のメッセージ
           </h3>
-          {selectedPosts.length === 0 ? (
-            <p className="text-sm text-gray-400">この日の投稿はありません</p>
+          {selectedChats.length === 0 ? (
+            <p className="text-sm text-gray-400">この日のメッセージはありません</p>
           ) : (
-            selectedPosts.map((post) => {
-              const reaction = reactionState[post.id] ?? {
-                count: post.reactionCount,
-                isLiked: post.isLikedByCurrentUser,
-              };
-
-              return (
-                <Card key={post.id} className="bg-white shadow-sm">
-                  <CardContent className="space-y-2 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-gray-900">
-                        {post.profiles.name}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(post.created_at).toLocaleTimeString("ja-JP", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                    <p className="whitespace-pre-wrap text-sm text-gray-800">
-                      {post.content}
-                    </p>
-                    {post.media_url && post.media_type === "image" && (
-                      <img
-                        src={post.media_url}
-                        alt="投稿画像"
-                        className="aspect-video w-full rounded-md object-cover"
-                      />
-                    )}
-                    {post.media_url && post.media_type === "video" && (
-                      <video
-                        src={post.media_url}
-                        controls
-                        className="aspect-video w-full rounded-md object-cover"
-                      />
-                    )}
-                    {/* いいねボタン */}
-                    <div className="pt-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={reaction.isLiked ? "text-red-500" : "text-gray-600"}
-                        disabled={processingLike === post.id}
-                        onClick={() => handleToggleLike(post.id)}
-                      >
-                        <Heart
-                          className="mr-1 h-4 w-4"
-                          fill={reaction.isLiked ? "currentColor" : "none"}
-                        />
-                        {reaction.count}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
+            selectedChats.map((chat) => (
+              <Card key={chat.id} className="bg-white shadow-sm">
+                <CardContent className="space-y-2 pt-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-gray-900">
+                      {chat.profiles.name}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(chat.created_at).toLocaleTimeString("ja-JP", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <p className="whitespace-pre-wrap text-sm text-gray-800">
+                    {chat.message}
+                  </p>
+                  {chat.image_url && !isVideoUrl(chat.image_url) && (
+                    <img
+                      src={chat.image_url}
+                      alt="添付画像"
+                      className="aspect-video w-full rounded-md object-cover"
+                    />
+                  )}
+                  {chat.image_url && isVideoUrl(chat.image_url) && (
+                    <video
+                      src={chat.image_url}
+                      controls
+                      className="aspect-video w-full rounded-md object-cover"
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            ))
           )}
         </div>
       )}

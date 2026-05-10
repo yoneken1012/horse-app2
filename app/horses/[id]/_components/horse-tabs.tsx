@@ -6,22 +6,20 @@ import { ChatTab } from "./chat-tab";
 import { LinkTab } from "./link-tab";
 import { Calendar, MessageCircle, Link2 } from "lucide-react";
 
-interface Post {
+interface ChatRecord {
   id: string;
-  content: string;
-  media_url: string | null;
-  media_type: string | null;
+  message: string;
+  image_url: string | null;
   created_at: string;
+  user_id: string;
   profiles: {
     name: string;
     avatar_url: string | null;
   };
-  reactionCount: number;
-  isLikedByCurrentUser: boolean;
 }
 
 interface HorseTabsProps {
-  posts: Post[];
+  chats: ChatRecord[];
   horseId: string;
   currentUserId: string;
   currentUserName: string;
@@ -35,7 +33,7 @@ const tabs = [
 
 type TabId = (typeof tabs)[number]["id"];
 
-export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: HorseTabsProps) {
+export function HorseTabs({ chats, horseId, currentUserId, currentUserName }: HorseTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("chat");
 
   return (
@@ -64,7 +62,7 @@ export function HorseTabs({ posts, horseId, currentUserId, currentUserName }: Ho
 
       {/* タブコンテンツ */}
       <div className="py-4">
-        {activeTab === "calendar" && <CalendarTab posts={posts} currentUserId={currentUserId} />}
+        {activeTab === "calendar" && <CalendarTab chats={chats} currentUserId={currentUserId} />}
         {activeTab === "chat" && (
           <ChatTab
             horseId={horseId}

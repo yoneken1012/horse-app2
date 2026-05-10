@@ -55,38 +55,32 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
     .eq("horse_id", horseId)
     .eq("category", "database");
 
-  // 調教師の投稿を取得（この馬の担当調教師の投稿）
-  const { data: posts, error: postsError } = await supabase
-    .from("posts")
-    .select(
-      `
-      *,
-      profiles:user_id ( name, avatar_url ),
-      reactions ( id, user_id )
-    `
-    )
-    .eq("user_id", horse.trainer_id)
+  // この馬のチャット履歴を取得
+  const { data: chatsData, error: chatsError } = await supabase
+    .from("horse_chats")
+    .select(`
+      id,
+      message,
+      image_url,
+      created_at,
+      user_id,
+      profiles:user_id ( name, avatar_url )
+    `)
+    .eq("horse_id", horseId)
     .order("created_at", { ascending: false });
 
-  if (postsError) {
-    console.error("投稿の取得に失敗しました:", postsError.message);
+  if (chatsError) {
+    console.error("チャットの取得に失敗しました:", chatsError.message);
   }
 
-  const safePosts = (posts ?? []).map((post) => {
-    const reactions = Array.isArray(post.reactions) ? post.reactions : [];
-    return {
-      id: post.id as string,
-      content: post.content as string,
-      media_url: post.media_url as string | null,
-      media_type: post.media_type as string | null,
-      created_at: post.created_at as string,
-      profiles: post.profiles as { name: string; avatar_url: string | null },
-      reactionCount: reactions.length,
-      isLikedByCurrentUser: reactions.some(
-        (r: { user_id: string }) => r.user_id === user.id
-      ),
-    };
-  });
+  const safeChats = (chatsData ?? []).map((chat) => ({
+    id: chat.id as string,
+    message: chat.message as string,
+    image_url: chat.image_url as string | null,
+    created_at: chat.created_at as string,
+    user_id: chat.user_id as string,
+    profiles: chat.profiles as unknown as { name: string; avatar_url: string | null },
+  }));
 
   return (
     <>
@@ -155,7 +149,7 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
         <Card className="bg-white shadow-sm">
           <CardContent className="p-4">
             <HorseTabs
-              posts={safePosts}
+              chats={safeChats}
               horseId={horseId}
               currentUserId={user.id}
               currentUserName={profile.name}
