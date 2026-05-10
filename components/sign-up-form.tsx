@@ -46,7 +46,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/timeline`,
+          emailRedirectTo: `${window.location.origin}/horses`,
           data: {
             name: displayName,
             role: selectedRole,
