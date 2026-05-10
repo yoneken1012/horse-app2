@@ -25,20 +25,20 @@ export function Header({ userName, userRole }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background">
       <div className="flex items-center justify-between px-3 py-2">
-        <Link href="/horses" className="text-xl font-bold text-gray-900">
+        <Link href="/horses" className="text-base font-medium tracking-[0.15em] uppercase text-foreground">
           Uma Vie
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
             {roleBadge[userRole] ?? userRole}
           </span>
-          <span className="hidden text-sm font-medium text-gray-700 sm:inline">
+          <span className="text-sm font-medium text-foreground">
             {userName}
           </span>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            ログアウト
+          <Button variant="outline" size="sm" onClick={handleLogout} className="text-xs uppercase tracking-wider">
+            Logout
           </Button>
         </div>
       </div>
