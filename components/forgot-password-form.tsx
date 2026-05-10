@@ -31,7 +31,6 @@ export function ForgotPasswordForm({
     setError(null);
 
     try {
-      // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/update-password`,
       });
@@ -47,32 +46,36 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
+        <Card className="bg-card border border-border shadow-none rounded-sm">
+          <CardHeader className="p-5 pb-0">
+            <CardTitle className="text-base uppercase tracking-[0.2em] font-normal text-foreground">
+              CHECK YOUR EMAIL
+            </CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">
+              パスワードリセットメールを送信しました
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
+          <CardContent className="p-5">
+            <p className="text-xs text-muted-foreground">
+              メールに記載されたリンクからパスワードをリセットしてください。
             </p>
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your
-              password
+        <Card className="bg-card border border-border shadow-none rounded-sm">
+          <CardHeader className="p-5 pb-0">
+            <CardTitle className="text-base uppercase tracking-[0.2em] font-normal text-foreground">
+              FORGOT PASSWORD
+            </CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">
+              メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5">
             <form onSubmit={handleForgotPassword}>
-              <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+              <div className="flex flex-col gap-5">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="email" className="text-[10px] uppercase tracking-wider text-muted-foreground font-normal">Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -80,18 +83,19 @@ export function ForgotPasswordForm({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="bg-background text-foreground rounded-sm"
                   />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send reset email"}
+                {error && <p className="text-xs text-destructive">{error}</p>}
+                <Button type="submit" className="w-full rounded-sm uppercase tracking-wider text-xs font-normal py-2.5" disabled={isLoading}>
+                  {isLoading ? "Sending..." : "SEND RESET EMAIL"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
+              <div className="mt-4 text-center text-xs text-muted-foreground">
+                アカウントをお持ちですか?{" "}
                 <Link
                   href="/auth/login"
-                  className="underline underline-offset-4"
+                  className="text-primary hover:underline underline-offset-4"
                 >
                   Login
                 </Link>

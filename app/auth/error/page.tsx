@@ -11,11 +11,11 @@ async function ErrorContent({
   return (
     <>
       {params?.error ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Code error: {params.error}
         </p>
       ) : (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           An unspecified error occurred.
         </p>
       )}
@@ -29,16 +29,16 @@ export default function Page({
   searchParams: Promise<{ error: string }>;
 }) {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center px-3 py-6">
+      <div className="w-full">
         <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Sorry, something went wrong.
+          <Card className="bg-card border border-border shadow-none rounded-sm">
+            <CardHeader className="p-5 pb-0">
+              <CardTitle className="text-base uppercase tracking-[0.2em] font-normal text-foreground">
+                ERROR
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-5">
               <Suspense>
                 <ErrorContent searchParams={searchParams} />
               </Suspense>

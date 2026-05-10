@@ -38,7 +38,6 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
       router.push("/horses");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
@@ -49,18 +48,20 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
+      <Card className="bg-card border border-border shadow-none rounded-sm">
+        <CardHeader className="p-5 pb-0">
+          <CardTitle className="text-base uppercase tracking-[0.2em] font-normal text-foreground">
+            LOGIN
+          </CardTitle>
+          <CardDescription className="text-xs text-muted-foreground">
+            メールアドレスとパスワードでログイン
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5">
           <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+            <div className="flex flex-col gap-5">
+              <div className="grid gap-1.5">
+                <Label htmlFor="email" className="text-[10px] uppercase tracking-wider text-muted-foreground font-normal">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -68,16 +69,17 @@ export function LoginForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-background text-foreground rounded-sm"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-1.5">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-[10px] uppercase tracking-wider text-muted-foreground font-normal">Password</Label>
                   <Link
                     href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="ml-auto text-xs text-muted-foreground hover:text-primary hover:underline underline-offset-4"
                   >
-                    Forgot your password?
+                    パスワードをお忘れですか?
                   </Link>
                 </div>
                 <Input
@@ -86,18 +88,19 @@ export function LoginForm({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="bg-background text-foreground rounded-sm"
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+              {error && <p className="text-xs text-destructive">{error}</p>}
+              <Button type="submit" className="w-full rounded-sm uppercase tracking-wider text-xs font-normal py-2.5" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "LOGIN"}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+            <div className="mt-4 text-center text-xs text-muted-foreground">
+              アカウントをお持ちでないですか?{" "}
               <Link
                 href="/auth/sign-up"
-                className="underline underline-offset-4"
+                className="text-primary hover:underline underline-offset-4"
               >
                 Sign up
               </Link>
