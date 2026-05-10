@@ -22,22 +22,22 @@ interface LinkTabProps {
 }
 
 const CATEGORIES = [
-  { id: "all", label: "すべて" },
-  { id: "bloodline", label: "血統" },
-  { id: "race_result", label: "レース結果" },
-  { id: "news", label: "ニュース" },
-  { id: "video", label: "動画" },
-  { id: "other", label: "その他" },
+  { id: "all", label: "All" },
+  { id: "bloodline", label: "Bloodline" },
+  { id: "race_result", label: "Race" },
+  { id: "news", label: "News" },
+  { id: "video", label: "Video" },
+  { id: "other", label: "Other" },
 ] as const;
 
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 const categoryLabel: Record<string, string> = {
-  bloodline: "血統",
-  race_result: "レース結果",
-  news: "ニュース",
-  video: "動画",
-  other: "その他",
+  bloodline: "Bloodline",
+  race_result: "Race",
+  news: "News",
+  video: "Video",
+  other: "Other",
 };
 
 export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
@@ -136,17 +136,17 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* カテゴリフィルタ */}
       <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-sm px-3 py-1 text-[10px] uppercase tracking-wider font-normal transition-colors ${
               activeCategory === cat.id
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-primary text-primary-foreground border border-primary"
+                : "bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-foreground/40"
             }`}
           >
             {cat.label}
@@ -160,32 +160,32 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
           variant="outline"
           size="sm"
           onClick={() => setShowForm(true)}
-          className="w-full"
+          className="w-full text-xs uppercase tracking-wider"
         >
           <Plus className="mr-1 h-4 w-4" />
-          リンクを追加
+          Add Link
         </Button>
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="space-y-3 rounded-lg border bg-gray-50 p-3"
+          className="space-y-3 rounded-sm border border-border bg-secondary/50 p-3"
         >
           <div>
             <Input
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="URL（必須）"
+              placeholder="URL (required)"
               type="url"
               required
-              className="bg-white text-gray-900"
+              className="bg-background text-foreground"
             />
           </div>
           <div>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="タイトル（任意）"
-              className="bg-white text-gray-900"
+              placeholder="Title (optional)"
+              className="bg-background text-foreground"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -194,25 +194,25 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
                 key={cat.id}
                 type="button"
                 onClick={() => setFormCategory(cat.id)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-sm px-3 py-1 text-[10px] uppercase tracking-wider font-normal transition-colors ${
                   formCategory === cat.id
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 ring-1 ring-gray-200 hover:bg-gray-100"
+                    ? "bg-primary text-primary-foreground border border-primary"
+                    : "bg-transparent text-muted-foreground border border-border hover:border-foreground/40"
                 }`}
               >
                 {cat.label}
               </button>
             ))}
           </div>
-          {error && <p className="text-xs text-red-500">{error}</p>}
+          {error && <p className="text-xs text-destructive">{error}</p>}
           <div className="flex gap-2">
             <Button
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="bg-blue-500 text-white hover:bg-blue-600"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs uppercase tracking-wider"
             >
-              {isSubmitting ? "追加中..." : "追加"}
+              {isSubmitting ? "Adding..." : "Add"}
             </Button>
             <Button
               type="button"
@@ -222,9 +222,10 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
                 setShowForm(false);
                 setError(null);
               }}
+              className="text-xs uppercase tracking-wider"
             >
               <X className="mr-1 h-3.5 w-3.5" />
-              キャンセル
+              Cancel
             </Button>
           </div>
         </form>
@@ -232,39 +233,39 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
 
       {/* リンク一覧 */}
       {filteredLinks.length === 0 ? (
-        <p className="py-8 text-center text-sm text-gray-400">
+        <p className="py-8 text-center text-sm text-muted-foreground">
           {activeCategory === "all"
-            ? "リンクがまだ登録されていません"
-            : `「${CATEGORIES.find((c) => c.id === activeCategory)?.label}」のリンクはありません`}
+            ? "No links yet"
+            : `No ${CATEGORIES.find((c) => c.id === activeCategory)?.label} links`}
         </p>
       ) : (
         <div className="space-y-2">
           {filteredLinks.map((link) => (
             <div
               key={link.id}
-              className="flex items-start gap-3 rounded-lg border bg-white p-3"
+              className="flex items-start gap-3 rounded-sm border border-border bg-card p-3"
             >
-              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <a
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block truncate text-sm font-medium text-blue-600 hover:underline"
+                  className="block truncate text-sm font-medium text-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
                 >
                   {link.title || link.url}
                 </a>
                 {link.title && (
-                  <p className="truncate text-xs text-gray-400">{link.url}</p>
+                  <p className="truncate text-xs text-muted-foreground/70">{link.url}</p>
                 )}
-                <span className="mt-1 inline-block rounded bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500">
+                <span className="mt-1 inline-block rounded-sm bg-secondary text-muted-foreground border border-border text-[10px] uppercase tracking-wider px-1.5">
                   {categoryLabel[link.category] ?? link.category}
                 </span>
               </div>
               {link.user_id === currentUserId && (
                 <button
                   onClick={() => handleDelete(link.id)}
-                  className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:text-destructive"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
