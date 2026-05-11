@@ -18,10 +18,38 @@ interface ChatMessage {
   message: string;
   image_url: string | null;
   created_at: string;
+  message_translated: string | null;
+  original_language: "ja" | "fr" | null;
   profiles: {
     name: string;
     avatar_url: string | null;
   };
+}
+
+async function translateMessage(
+  text: string
+): Promise<{ translatedText: string; originalLanguage: "ja" | "fr" } | null> {
+  try {
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+      console.error("Translation API returned error:", response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    return {
+      translatedText: data.translatedText,
+      originalLanguage: data.originalLanguage,
+    };
+  } catch (error) {
+    console.error("Translation request failed:", error);
+    return null;
+  }
 }
 
 interface ChatTabProps {
@@ -72,6 +100,8 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         message: row.message as string,
         image_url: (row.image_url as string | null) ?? null,
         created_at: row.created_at as string,
+        message_translated: (row.message_translated as string | null) ?? null,
+        original_language: (row.original_language as "ja" | "fr" | null) ?? null,
         profiles: row.profiles as { name: string; avatar_url: string | null },
       }))
     );
@@ -174,6 +204,18 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         imageUrl = publicUrl;
       }
 
+      // テキストメッセージの場合は翻訳を試みる
+      let messageTranslated: string | null = null;
+      let originalLanguage: "ja" | "fr" | null = null;
+
+      if (trimmed) {
+        const translation = await translateMessage(trimmed);
+        if (translation) {
+          messageTranslated = translation.translatedText;
+          originalLanguage = translation.originalLanguage;
+        }
+      }
+
       // 楽観的更新
       const optimisticMessage: ChatMessage = {
         id: `temp-${Date.now()}`,
@@ -182,6 +224,8 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         message: trimmed,
         image_url: imageUrl,
         created_at: new Date().toISOString(),
+        message_translated: messageTranslated,
+        original_language: originalLanguage,
         profiles: { name: currentUserName, avatar_url: null },
       };
       setMessages((prev) => [...prev, optimisticMessage]);
@@ -193,6 +237,8 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         user_id: currentUserId,
         message: trimmed || (mediaType === "image" ? "画像を送信しました" : "動画を送信しました"),
         image_url: imageUrl,
+        message_translated: messageTranslated,
+        original_language: originalLanguage,
       });
 
       if (insertError) {
@@ -377,7 +423,11 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
           disabled={isSending || (!newMessage.trim() && !file)}
           className="bg-primary px-3 text-primary-foreground hover:bg-primary/90"
         >
-          <Send className="h-4 w-4" />
+          {isSending ? (
+            <span className="inline-block h-3 w-3 rounded-full border border-primary-foreground/40 border-t-primary-foreground animate-spin" />
+          ) : (
+            <Send className="h-4 w-4" />
+          )}
         </Button>
       </form>
     </div>
