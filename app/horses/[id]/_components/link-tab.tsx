@@ -23,7 +23,7 @@ interface LinkTabProps {
 
 const CATEGORIES = [
   { id: "all", label: "All" },
-  { id: "bloodline", label: "Bloodline" },
+  { id: "database", label: "Database" },
   { id: "race_result", label: "Race" },
   { id: "news", label: "News" },
   { id: "video", label: "Video" },
@@ -33,7 +33,7 @@ const CATEGORIES = [
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 const categoryLabel: Record<string, string> = {
-  bloodline: "Bloodline",
+  database: "Database",
   race_result: "Race",
   news: "News",
   video: "Video",
@@ -259,7 +259,7 @@ export function LinkTab({ horseId, currentUserId }: LinkTabProps) {
                   <p className="truncate text-xs text-muted-foreground/70">{link.url}</p>
                 )}
                 <span className="mt-1 inline-block rounded-sm bg-secondary text-muted-foreground border border-border text-[10px] uppercase tracking-wider px-1.5">
-                  {categoryLabel[link.category] ?? link.category}
+                  {categoryLabel[link.category] ?? "Other"}
                 </span>
               </div>
               {link.user_id === currentUserId && (
