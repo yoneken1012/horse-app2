@@ -13,6 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+        serif: ["var(--font-serif)", "serif"],
       },
       colors: {
         backdrop: "hsl(var(--backdrop))",

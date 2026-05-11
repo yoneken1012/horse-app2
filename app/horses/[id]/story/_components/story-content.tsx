@@ -43,7 +43,7 @@ export function StoryContent({ horse }: { horse: Horse }) {
   const headerImage = horse.story_image_url || horse.image_url;
 
   return (
-    <article className="px-3 py-4">
+    <article className="px-3 py-6">
       {/* Back link */}
       <Link
         href={`/horses/${horse.id}`}
@@ -78,13 +78,18 @@ export function StoryContent({ horse }: { horse: Horse }) {
 
       {/* Story title */}
       {horse.story_title && (
-        <p className="text-center mb-8 text-sm italic text-muted-foreground tracking-wide">
+        <p className="text-center mb-2 text-sm italic text-muted-foreground tracking-wide">
           ― {horse.story_title} ―
         </p>
       )}
 
+      {/* Reading time */}
+      <p className="text-center mb-8 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+        A 2-minute read
+      </p>
+
       {/* Story body */}
-      <div className="text-foreground text-[15px] leading-[1.9] tracking-wide whitespace-pre-line">
+      <div className="font-serif text-foreground text-[15px] leading-[1.9] tracking-wide whitespace-pre-line">
         {horse.story_text}
       </div>
 

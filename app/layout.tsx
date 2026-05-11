@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -19,6 +19,13 @@ const notoSansJp = Noto_Sans_JP({
   variable: "--font-sans",
 });
 
+const notoSerifJp = Noto_Serif_JP({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-serif",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${notoSansJp.variable} font-sans antialiased`}>
+      <body className={`${notoSansJp.variable} ${notoSerifJp.variable} font-sans antialiased`}>
         <div className="min-h-screen w-full flex justify-center bg-backdrop">
           <div className="w-full max-w-[420px] min-h-screen bg-background shadow-[0_0_40px_rgba(0,0,0,0.04)]">
             {children}
