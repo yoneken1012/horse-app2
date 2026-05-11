@@ -42,6 +42,14 @@
   * {
     @apply border-border;
   }
+  ::selection {
+    background-color: hsl(var(--primary) / 0.15);
+    color: hsl(var(--foreground));
+  }
+  ::-moz-selection {
+    background-color: hsl(var(--primary) / 0.15);
+    color: hsl(var(--foreground));
+  }
   html, body {
     background-color: hsl(var(--backdrop));
     color: hsl(var(--foreground));
