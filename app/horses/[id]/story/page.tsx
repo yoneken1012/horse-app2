@@ -21,7 +21,11 @@ async function StoryLoader({ params }: { params: Promise<{ id: string }> }) {
     notFound();
   }
 
-  return <StoryContent horse={horse} />;
+  // Generate a unique key for each render to force StoryContent to remount,
+  // which resets isLoading state to true and re-plays the loading animation.
+  const renderKey = `${id}-${Date.now()}`;
+
+  return <StoryContent key={renderKey} horse={horse} />;
 }
 
 export default function StoryPage({ params }: StoryPageProps) {
