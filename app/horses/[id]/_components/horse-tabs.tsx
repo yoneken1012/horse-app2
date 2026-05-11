@@ -26,9 +26,9 @@ interface HorseTabsProps {
 }
 
 const tabs = [
-  { id: "chat", label: "チャット", icon: MessageCircle },
-  { id: "calendar", label: "カレンダー", icon: Calendar },
-  { id: "links", label: "リンク", icon: Link2 },
+  { id: "chat", label: "Chat", icon: MessageCircle },
+  { id: "calendar", label: "Calendar", icon: Calendar },
+  { id: "links", label: "Links", icon: Link2 },
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -39,7 +39,7 @@ export function HorseTabs({ chats, horseId, currentUserId, currentUserName }: Ho
   return (
     <div>
       {/* タブバー */}
-      <div className="flex border-b">
+      <div className="flex border-b border-border/60">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -47,13 +47,13 @@ export function HorseTabs({ chats, horseId, currentUserId, currentUserName }: Ho
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-1 items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors ${
+              className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-[11px] uppercase tracking-[0.15em] font-normal transition-colors ${
                 isActive
-                  ? "border-b-2 border-gray-900 text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "border-b border-primary text-primary"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-3.5 w-3.5" />
               {tab.label}
             </button>
           );
@@ -61,7 +61,7 @@ export function HorseTabs({ chats, horseId, currentUserId, currentUserName }: Ho
       </div>
 
       {/* タブコンテンツ */}
-      <div className="py-4">
+      <div className="py-3">
         {activeTab === "calendar" && <CalendarTab chats={chats} currentUserId={currentUserId} />}
         {activeTab === "chat" && (
           <ChatTab

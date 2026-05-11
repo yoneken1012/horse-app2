@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { HorseTabs } from "./horse-tabs";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 const genderLabel: Record<string, string> = {
   male: "牡",
@@ -86,43 +86,46 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
     <>
       <Header userName={profile.name} userRole={profile.role} />
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
+      <main className="px-3 py-3">
         {/* 戻るリンク */}
         <Link
           href="/horses"
-          className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+          className="mb-3 inline-flex items-center gap-1 text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" />
-          馬一覧に戻る
+          ← Back
         </Link>
 
         {/* 馬プロフィールカード */}
-        <Card className="mb-6 bg-white shadow-sm">
-          <CardContent className="flex items-start gap-4 pt-6">
+        <Card className="mb-3 bg-card border border-border shadow-none rounded-sm">
+          <CardContent className="flex items-start gap-4 p-3">
             {horse.image_url ? (
               <img
                 src={horse.image_url}
                 alt={horse.name}
-                className="h-24 w-24 rounded-lg object-cover"
+                className="h-20 w-20 rounded-sm object-cover"
               />
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-gray-100 text-4xl">
+              <div className="flex h-20 w-20 items-center justify-center rounded-sm bg-secondary text-4xl">
                 🐴
               </div>
             )}
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900">{horse.name}</h2>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <h2 className="text-lg font-medium text-foreground tracking-wide">{horse.name}</h2>
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {horse.gender && (
-                  <Badge className="bg-gray-900 text-white">
+                  <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
                     {genderLabel[horse.gender] ?? horse.gender}
                   </Badge>
                 )}
                 {horse.birth_year && (
-                  <Badge className="bg-gray-900 text-white">{horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）</Badge>
+                  <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
+                    {horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）
+                  </Badge>
                 )}
                 {horse.class && (
-                  <Badge className="bg-gray-900 text-white">{horse.class}</Badge>
+                  <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
+                    {horse.class}
+                  </Badge>
                 )}
               </div>
               {horseLinks && horseLinks.length > 0 && (
@@ -133,7 +136,7 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                      className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 underline-offset-4 hover:underline"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       {link.title ?? "France Galop"}
@@ -146,8 +149,8 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
         </Card>
 
         {/* タブUI */}
-        <Card className="bg-white shadow-sm">
-          <CardContent className="p-4">
+        <Card className="bg-card border border-border shadow-none rounded-sm">
+          <CardContent className="p-3">
             <HorseTabs
               chats={safeChats}
               horseId={horseId}

@@ -8,20 +8,21 @@ import {
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center px-3 py-6">
+      <div className="w-full">
         <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Thank you for signing up!
+          <Card className="bg-card border border-border shadow-none rounded-sm">
+            <CardHeader className="p-5 pb-0">
+              <CardTitle className="text-base uppercase tracking-[0.2em] font-normal text-foreground">
+                THANK YOU
               </CardTitle>
-              <CardDescription>Check your email to confirm</CardDescription>
+              <CardDescription className="text-xs text-muted-foreground">
+                アカウント登録ありがとうございます
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                You&apos;ve successfully signed up. Please check your email to
-                confirm your account before signing in.
+            <CardContent className="p-5">
+              <p className="text-xs text-muted-foreground">
+                確認メールをお送りしました。メール内のリンクをクリックしてアカウントを有効化してください。
               </p>
             </CardContent>
           </Card>

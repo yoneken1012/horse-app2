@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 interface Horse {
@@ -51,7 +51,6 @@ export async function HorseList() {
   let horses: Horse[] = [];
 
   if (profile.role === "trainer") {
-    // 調教師: trainer_idが自分の馬を取得
     const { data, error } = await supabase
       .from("horses")
       .select("*")
@@ -64,7 +63,6 @@ export async function HorseList() {
       horses = data ?? [];
     }
   } else {
-    // 馬主: horse_ownersテーブル経由で馬を取得
     const { data, error } = await supabase
       .from("horse_owners")
       .select("horses (*)")
@@ -83,54 +81,54 @@ export async function HorseList() {
     <>
       <Header userName={profile.name} userRole={profile.role} />
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
-        <h2 className="mb-4 text-lg font-bold text-gray-900">
+      <main className="px-3 py-3">
+        <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-normal mb-3">
           {profile.role === "trainer" ? "担当馬一覧" : "所有馬一覧"}
         </h2>
 
         {horses.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <p className="text-lg font-medium text-gray-600">
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="text-sm font-normal text-muted-foreground">
               馬が登録されていません
             </p>
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-xs text-muted-foreground/70">
               {profile.role === "trainer"
                 ? "担当馬が登録されると表示されます"
                 : "所有馬が登録されると表示されます"}
             </p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             {horses.map((horse) => (
               <Link key={horse.id} href={`/horses/${horse.id}`}>
-                <Card className="bg-white shadow-sm transition-all hover:bg-gray-50 hover:shadow-lg">
-                  <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                <Card className="bg-card border border-border shadow-none rounded-sm transition-colors hover:border-foreground/20">
+                  <CardHeader className="flex flex-row items-center gap-4 p-3">
                     {horse.image_url ? (
                       <img
                         src={horse.image_url}
                         alt={horse.name}
-                        className="h-16 w-16 rounded-lg object-cover"
+                        className="h-14 w-14 rounded-sm object-cover"
                       />
                     ) : (
-                      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100 text-2xl">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-sm bg-secondary text-2xl">
                         🐴
                       </div>
                     )}
                     <div>
-                      <CardTitle className="text-base text-gray-900">{horse.name}</CardTitle>
-                      <div className="mt-1 flex flex-wrap gap-2">
+                      <CardTitle className="text-sm font-medium text-foreground tracking-wide">{horse.name}</CardTitle>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
                         {horse.gender && (
-                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
+                          <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
                             {genderLabel[horse.gender] ?? horse.gender}
                           </span>
                         )}
                         {horse.birth_year && (
-                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
+                          <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
                             {horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）
                           </span>
                         )}
                         {horse.class && (
-                          <span className="rounded bg-gray-900 px-2 py-0.5 text-xs text-white">
+                          <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
                             {horse.class}
                           </span>
                         )}

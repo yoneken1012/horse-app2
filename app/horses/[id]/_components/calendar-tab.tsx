@@ -22,7 +22,8 @@ interface CalendarTabProps {
   currentUserId: string;
 }
 
-const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 function getCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -41,6 +42,11 @@ function getCalendarDays(year: number, month: number) {
 function formatDate(dateString: string): string {
   const d = new Date(dateString);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function formatDateHeader(dateKey: string): string {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return `${MONTHS[month - 1]} ${day}, ${year}`;
 }
 
 function isVideoUrl(url: string): boolean {
@@ -95,22 +101,22 @@ export function CalendarTab({ chats }: CalendarTabProps) {
   const todayKey = formatDate(today.toISOString());
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* カレンダーヘッダー */}
       <div className="flex items-center justify-between">
         <Button
           size="sm"
-          className="bg-slate-700 px-3 text-white hover:bg-slate-600"
+          className="bg-transparent text-foreground hover:bg-secondary border border-border px-3"
           onClick={handlePrevMonth}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="text-sm font-bold text-gray-900">
-          {currentYear}年{currentMonth + 1}月
+        <span className="text-sm font-medium tracking-wider">
+          {MONTHS[currentMonth]} {currentYear}
         </span>
         <Button
           size="sm"
-          className="bg-slate-700 px-3 text-white hover:bg-slate-600"
+          className="bg-transparent text-foreground hover:bg-secondary border border-border px-3"
           onClick={handleNextMonth}
         >
           <ChevronRight className="h-4 w-4" />
@@ -118,9 +124,9 @@ export function CalendarTab({ chats }: CalendarTabProps) {
       </div>
 
       {/* 曜日ヘッダー */}
-      <div className="grid grid-cols-7 gap-px text-center text-xs font-medium text-gray-500">
-        {WEEKDAYS.map((day) => (
-          <div key={day} className="py-1">
+      <div className="grid grid-cols-7 gap-px text-center text-[10px] uppercase tracking-widest text-muted-foreground font-normal">
+        {WEEKDAYS.map((day, i) => (
+          <div key={`${day}-${i}`} className="py-1">
             {day}
           </div>
         ))}
@@ -142,19 +148,19 @@ export function CalendarTab({ chats }: CalendarTabProps) {
             <button
               key={dateKey}
               onClick={() => handleDayClick(day)}
-              className={`relative flex h-10 items-center justify-center rounded-md text-sm transition-colors ${
+              className={`relative flex h-10 items-center justify-center rounded-sm text-sm transition-colors ${
                 isSelected
-                  ? "bg-gray-900 text-white"
+                  ? "bg-primary text-primary-foreground"
                   : isToday
-                    ? "bg-blue-50 font-bold text-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? "bg-secondary font-medium text-foreground"
+                    : "text-foreground hover:bg-secondary"
               }`}
             >
               {day}
               {hasChats && (
                 <span
                   className={`absolute bottom-1 h-1.5 w-1.5 rounded-full ${
-                    isSelected ? "bg-white" : "bg-blue-500"
+                    isSelected ? "bg-white" : "bg-primary"
                   }`}
                 />
               )}
@@ -166,41 +172,41 @@ export function CalendarTab({ chats }: CalendarTabProps) {
       {/* 選択日のメッセージ一覧 */}
       {selectedDate && (
         <div className="space-y-3">
-          <h3 className="text-sm font-bold text-gray-700">
-            {selectedDate.replace(/-/g, "/")} のメッセージ
+          <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-normal">
+            {formatDateHeader(selectedDate)} — Messages
           </h3>
           {selectedChats.length === 0 ? (
-            <p className="text-sm text-gray-400">この日のメッセージはありません</p>
+            <p className="text-sm text-muted-foreground">No messages on this day</p>
           ) : (
             selectedChats.map((chat) => (
-              <Card key={chat.id} className="bg-white shadow-sm">
-                <CardContent className="space-y-2 pt-4">
+              <Card key={chat.id} className="bg-card border border-border shadow-none rounded-sm">
+                <CardContent className="space-y-2 p-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-900">
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-normal">
                       {chat.profiles.name}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-[10px] text-muted-foreground">
                       {new Date(chat.created_at).toLocaleTimeString("ja-JP", {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </span>
                   </div>
-                  <p className="whitespace-pre-wrap text-sm text-gray-800">
+                  <p className="whitespace-pre-wrap text-sm text-foreground leading-relaxed">
                     {chat.message}
                   </p>
                   {chat.image_url && !isVideoUrl(chat.image_url) && (
                     <img
                       src={chat.image_url}
                       alt="添付画像"
-                      className="aspect-video w-full rounded-md object-cover"
+                      className="aspect-video w-full rounded-sm object-cover"
                     />
                   )}
                   {chat.image_url && isVideoUrl(chat.image_url) && (
                     <video
                       src={chat.image_url}
                       controls
-                      className="aspect-video w-full rounded-md object-cover"
+                      className="aspect-video w-full rounded-sm object-cover"
                     />
                   )}
                 </CardContent>
