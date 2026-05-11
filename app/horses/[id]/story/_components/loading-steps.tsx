@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const STEPS = [
-  { label: "Analyzing past posts", duration: 1200 },
-  { label: "Reading race records", duration: 1100 },
-  { label: "Reviewing trainer notes", duration: 1000 },
-  { label: "Weaving the narrative", duration: 1400 },
-  { label: "Composing the story", duration: 900 },
+  { label: "過去の投稿を分析しています", duration: 1200 },
+  { label: "レース成績を読み込んでいます", duration: 1100 },
+  { label: "調教師の記録を確認しています", duration: 1000 },
+  { label: "物語を紡いでいます", duration: 1400 },
+  { label: "文章を整えています", duration: 900 },
 ];
 
 interface LoadingStepsProps {
@@ -30,8 +30,12 @@ export function LoadingSteps({ onComplete }: LoadingStepsProps) {
 
   return (
     <div className="flex min-h-[80vh] flex-col items-center justify-center px-6">
-      <div className="mb-8 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-        Generating Story
+      <div className="mb-8 flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+        <span
+          aria-hidden="true"
+          className="inline-block h-3 w-3 rounded-full border border-muted-foreground/30 border-t-primary animate-spin"
+        />
+        <span>Generating Story</span>
       </div>
       <div className="space-y-3 w-full max-w-[280px]">
         {STEPS.map((step, idx) => {
