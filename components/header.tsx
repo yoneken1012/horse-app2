@@ -11,8 +11,8 @@ interface HeaderProps {
 }
 
 const roleBadge: Record<string, string> = {
-  trainer: "🏇 調教師",
-  owner: "👑 馬主",
+  trainer: "🏇 Trainer",
+  owner: "👑 Owner",
 };
 
 export function Header({ userName, userRole }: HeaderProps) {
@@ -27,7 +27,7 @@ export function Header({ userName, userRole }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background">
       <div className="flex items-center justify-between px-3 py-2">
-        <Link href="/horses" className="text-base font-medium tracking-[0.15em] uppercase text-foreground">
+        <Link href="/horses" className="text-base font-medium tracking-[0.15em] text-foreground">
           Uma Vie
         </Link>
         <div className="flex items-center gap-2">
