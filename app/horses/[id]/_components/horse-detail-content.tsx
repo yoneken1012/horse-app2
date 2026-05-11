@@ -148,6 +148,14 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
           </CardContent>
         </Card>
 
+        {/* 物語生成ボタン */}
+        <Link
+          href={`/horses/${horseId}/story`}
+          className="block w-full mb-3 py-3 text-center text-xs uppercase tracking-[0.25em] font-normal bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm transition-colors border border-primary"
+        >
+          ✦ Generate Story
+        </Link>
+
         {/* タブUI */}
         <Card className="bg-card border border-border shadow-none rounded-sm">
           <CardContent className="p-3">
