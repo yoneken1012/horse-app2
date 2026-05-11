@@ -23,7 +23,7 @@ export function StoryContent({ horse }: { horse: Horse }) {
 
   if (!horse.story_text) {
     return (
-      <div className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+      <div className="animate-in fade-in duration-500 flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
         <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
           No story available
         </p>
@@ -43,7 +43,7 @@ export function StoryContent({ horse }: { horse: Horse }) {
   const headerImage = horse.story_image_url || horse.image_url;
 
   return (
-    <article className="px-3 py-6">
+    <article className="animate-in fade-in duration-500 px-3 py-6">
       {/* Back link */}
       <Link
         href={`/horses/${horse.id}`}
