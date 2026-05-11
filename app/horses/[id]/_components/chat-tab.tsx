@@ -344,7 +344,7 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
                               {msg.message}
                             </p>
                             {msg.message_translated && (
-                              <p className="mt-1.5 text-xs leading-relaxed text-current/60 italic">
+                              <p className="mt-1 pt-1 text-[11px] leading-relaxed text-current/60 italic border-t border-current/10">
                                 {msg.message_translated}
                               </p>
                             )}
@@ -422,7 +422,8 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 text-foreground"
+          disabled={isSending}
+          className={`flex-1 text-foreground ${isSending ? "opacity-50 cursor-not-allowed" : ""}`}
         />
         <Button
           type="submit"
