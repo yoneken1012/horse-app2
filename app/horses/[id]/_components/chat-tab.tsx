@@ -339,9 +339,16 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
                           )
                         )}
                         {msg.message && (
-                          <p className="whitespace-pre-wrap break-words px-3 py-2">
-                            {msg.message}
-                          </p>
+                          <div className="px-3 py-2">
+                            <p className="whitespace-pre-wrap break-words">
+                              {msg.message}
+                            </p>
+                            {msg.message_translated && (
+                              <p className="mt-1.5 text-xs leading-relaxed text-current/60 italic">
+                                {msg.message_translated}
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
                       {!isOwn && (
