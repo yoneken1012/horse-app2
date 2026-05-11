@@ -117,14 +117,14 @@ export async function HorseList() {
                     <div>
                       <CardTitle className="text-sm font-medium text-foreground tracking-wide">{horse.name}</CardTitle>
                       <div className="mt-1 flex flex-wrap gap-1.5">
+                        {horse.birth_year && (
+                          <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
+                            {new Date().getFullYear() - horse.birth_year}歳 ({horse.birth_year}年生)
+                          </span>
+                        )}
                         {horse.gender && (
                           <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
                             {genderLabel[horse.gender] ?? horse.gender}
-                          </span>
-                        )}
-                        {horse.birth_year && (
-                          <span className="rounded-sm bg-secondary text-foreground border border-border text-[10px] px-1.5 py-0 uppercase tracking-wider">
-                            {horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）
                           </span>
                         )}
                         {horse.class && (

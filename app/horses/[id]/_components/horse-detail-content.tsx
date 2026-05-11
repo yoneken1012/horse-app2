@@ -112,14 +112,14 @@ export async function HorseDetailContent({ horseId }: { horseId: string }) {
             <div className="flex-1">
               <h2 className="text-lg font-medium text-foreground tracking-wide">{horse.name}</h2>
               <div className="mt-2 flex flex-wrap gap-1.5">
+                {horse.birth_year && (
+                  <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
+                    {new Date().getFullYear() - horse.birth_year}歳 ({horse.birth_year}年生)
+                  </Badge>
+                )}
                 {horse.gender && (
                   <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
                     {genderLabel[horse.gender] ?? horse.gender}
-                  </Badge>
-                )}
-                {horse.birth_year && (
-                  <Badge className="bg-secondary text-foreground border border-border font-normal text-[10px] px-1.5 py-0 uppercase tracking-wider">
-                    {horse.birth_year}年生（{new Date().getFullYear() - horse.birth_year}歳）
                   </Badge>
                 )}
                 {horse.class && (
