@@ -55,7 +55,8 @@ export async function HorseList() {
       .from("horses")
       .select("*")
       .eq("trainer_id", userId)
-      .order("created_at", { ascending: false });
+      .order("birth_year", { ascending: true })
+      .order("name", { ascending: true });
 
     if (error) {
       console.error("馬一覧の取得に失敗しました:", error.message);
@@ -75,6 +76,13 @@ export async function HorseList() {
         .map((row) => (row as unknown as { horses: Horse }).horses)
         .filter(Boolean);
     }
+    // Sort by birth_year ascending (older first), then by name
+    horses.sort((a, b) => {
+      const yearA = a.birth_year ?? 9999;
+      const yearB = b.birth_year ?? 9999;
+      if (yearA !== yearB) return yearA - yearB;
+      return a.name.localeCompare(b.name);
+    });
   }
 
   return (
