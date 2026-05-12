@@ -400,9 +400,9 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         <div ref={bottomRef} />
       </div>
 
-      {/* エラー表示 */}
+      {/* エラー表示(翻訳エラー、マイク許可拒否等) */}
       {error && (
-        <p className="px-2 pb-1 text-xs text-destructive">{error}</p>
+        <p className="px-2 pb-1 text-[11px] text-destructive">{error}</p>
       )}
 
       {/* プレビュー */}
