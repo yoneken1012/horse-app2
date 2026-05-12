@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Paperclip, X } from "lucide-react";
+import { Send, Paperclip, X, Mic } from "lucide-react";
+import { useVoiceInput } from "./use-voice-input";
 
 const ACCEPTED_TYPES =
   "image/jpeg,image/png,image/gif,image/webp,image/heic,image/heif,video/mp4,video/quicktime,video/webm";
@@ -66,8 +67,41 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
+  const [interimText, setInterimText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { isListening, isSupported, start, stop } = useVoiceInput({
+    lang: "ja-JP",
+    onResult: (text, isFinal) => {
+      if (isFinal) {
+        setNewMessage((prev) => prev + text);
+        setInterimText("");
+      } else {
+        setInterimText(text);
+      }
+    },
+    onError: (errorMessage) => {
+      setError(errorMessage);
+    },
+  });
+
+  const handleMicClick = () => {
+    if (isListening) {
+      stop();
+    } else {
+      setError(null);
+      start();
+    }
+  };
+
+  // 認識終了時に暫定テキストも確定させる
+  useEffect(() => {
+    if (!isListening && interimText) {
+      setNewMessage((prev) => prev + interimText);
+      setInterimText("");
+    }
+  }, [isListening, interimText]);
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -421,22 +455,38 @@ export function ChatTab({ horseId, currentUserId, currentUserName }: ChatTabProp
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder={isListening ? interimText || "聞いています..." : "Type a message..."}
           disabled={isSending}
-          className={`flex-1 text-foreground ${isSending ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex-1 text-foreground ${isSending ? "opacity-50 cursor-not-allowed" : ""} ${isListening ? "placeholder:text-primary placeholder:italic" : ""}`}
         />
-        <Button
-          type="submit"
-          size="sm"
-          disabled={isSending || (!newMessage.trim() && !file)}
-          className="bg-primary px-3 text-primary-foreground hover:bg-primary/90"
-        >
-          {isSending ? (
-            <span className="inline-block h-3 w-3 rounded-full border border-primary-foreground/40 border-t-primary-foreground animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
-        </Button>
+        {!newMessage.trim() && !file && isSupported ? (
+          <button
+            type="button"
+            onClick={handleMicClick}
+            disabled={isSending}
+            aria-label={isListening ? "音声入力を停止" : "音声入力を開始"}
+            className={`inline-flex items-center justify-center h-9 w-9 rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              isListening
+                ? "bg-primary text-primary-foreground border border-primary shadow-[0_0_0_4px_hsl(var(--primary)/0.15)] animate-pulse"
+                : "bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 hover:text-foreground hover:border-foreground/30"
+            }`}
+          >
+            <Mic className="h-4 w-4" />
+          </button>
+        ) : (
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isSending || (!newMessage.trim() && !file)}
+            className="bg-primary px-3 text-primary-foreground hover:bg-primary/90"
+          >
+            {isSending ? (
+              <span className="inline-block h-3 w-3 rounded-full border border-primary-foreground/40 border-t-primary-foreground animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
+        )}
       </form>
     </div>
   );
