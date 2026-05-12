@@ -4,16 +4,12 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { School, Crown } from "lucide-react";
 
 interface HeaderProps {
   userName: string;
   userRole: "owner" | "trainer";
 }
-
-const roleBadge: Record<string, string> = {
-  trainer: "🏇 Trainer",
-  owner: "👑 Owner",
-};
 
 export function Header({ userName, userRole }: HeaderProps) {
   const router = useRouter();
@@ -31,8 +27,18 @@ export function Header({ userName, userRole }: HeaderProps) {
           Uma Vie
         </Link>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
-            {roleBadge[userRole] ?? userRole}
+          <span className="inline-flex items-center gap-1.5 bg-secondary text-foreground border border-border rounded-sm px-2 py-0.5 text-[10px] uppercase tracking-wider font-normal select-none">
+            {userRole === "trainer" ? (
+              <>
+                <School className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <span>Trainer</span>
+              </>
+            ) : (
+              <>
+                <Crown className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <span>Owner</span>
+              </>
+            )}
           </span>
           <span className="text-sm font-medium text-foreground">
             {userName}
